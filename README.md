@@ -6,9 +6,9 @@ The original Overleaf README is preserved in [overleaf_README.md](overleaf_READM
 
 ## Demo
 
-[Watch the demo video](doc/demo.mp4).
+![Smart Overleaf demo](doc/demo.gif)
 
-<video src="doc/demo.mp4" controls width="100%"></video>
+[Download the MP4 demo video](doc/demo.mp4).
 
 ## Why This Project
 
