@@ -8,8 +8,6 @@ The original Overleaf README is preserved in [overleaf_README.md](overleaf_READM
 
 ![Smart Overleaf demo](doc/demo.gif)
 
-[Download the MP4 demo video](doc/demo.mp4).
-
 ## Why This Project
 
 Hosted Overleaf has several limitations for budget-sensitive users:
