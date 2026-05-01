@@ -26,6 +26,7 @@ services:
     env_file:
       - dev.env
     environment:
+      - DOWNLOAD_HOST=http://clsi-nginx:8080
       - SANDBOXED_COMPILES=false
     user: root
     volumes:
@@ -139,6 +140,12 @@ services:
     volumes:
       - redis-data:/data
 
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:8025:8025" # web UI
+      - "127.0.0.1:1025:1025" # SMTP for local debugging
+
   web:
     build:
       context: ..
@@ -147,11 +154,23 @@ services:
     env_file:
       - dev.env
     environment:
+      - ADMIN_EMAIL=admin@example.edu.cn
+      - ADMIN_PRIVILEGE_AVAILABLE=true
       - APP_NAME=Overleaf Community Edition
       - ENABLED_LINKED_FILE_TYPES=project_file,project_output_file
       - EMAIL_CONFIRMATION_DISABLED=true
+      - EMAIL_FROM_ADDRESS=overleaf@localhost
+      - EMAIL_REPLY_TO_ADDRESS=no-reply@localhost
+      - LLM_ASSISTANT_API_KEY=${LLM_ASSISTANT_API_KEY:-}
+      - LLM_ASSISTANT_BASE_URL=${LLM_ASSISTANT_BASE_URL:-}
+      - LLM_ASSISTANT_ENABLED=${LLM_ASSISTANT_ENABLED:-false}
+      - LLM_ASSISTANT_MODEL=${LLM_ASSISTANT_MODEL:-}
       - NODE_ENV=development
       - OVERLEAF_ALLOW_PUBLIC_ACCESS=true
+      - PUBLIC_URL=http://localhost
+      - SMTP_HOST=mailpit
+      - SMTP_PORT=1025
+      - SMTP_SECURE=false
     command: ["node", "app.mjs"]
     volumes:
       - sharelatex-data:/var/lib/overleaf
@@ -166,6 +185,7 @@ services:
       - document-updater
       - filestore
       - history-v1
+      - mailpit
       - notifications
       - project-history
       - real-time

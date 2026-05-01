@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+OVERLEAF_BASE_IMAGE_NAME="${OVERLEAF_BASE_IMAGE_NAME:-overleaf-base}"
+OVERLEAF_IMAGE_NAME="${OVERLEAF_IMAGE_NAME:-overleaf-llm}"
+OVERLEAF_IMAGE_TAG="${OVERLEAF_IMAGE_TAG:-6.1.2}"
+TEXLIVE_MIRROR="${TEXLIVE_MIRROR:-}"
+
+BASE_IMAGE="${OVERLEAF_BASE_IMAGE_NAME}:${OVERLEAF_IMAGE_TAG}"
+APP_IMAGE="${OVERLEAF_IMAGE_NAME}:${OVERLEAF_IMAGE_TAG}"
+
+export DOCKER_BUILDKIT=1
+
+echo "Building Overleaf base image: $BASE_IMAGE"
+if [[ -n "$TEXLIVE_MIRROR" ]]; then
+  docker build \
+    --file "$ROOT_DIR/server-ce/Dockerfile-base" \
+    --tag "$BASE_IMAGE" \
+    --build-arg "TEXLIVE_MIRROR=$TEXLIVE_MIRROR" \
+    "$ROOT_DIR"
+else
+  docker build \
+    --file "$ROOT_DIR/server-ce/Dockerfile-base" \
+    --tag "$BASE_IMAGE" \
+    "$ROOT_DIR"
+fi
+
+echo "Building Overleaf application image: $APP_IMAGE"
+docker build \
+  --file "$ROOT_DIR/server-ce/Dockerfile" \
+  --build-arg "OVERLEAF_BASE_TAG=$BASE_IMAGE" \
+  --tag "$APP_IMAGE" \
+  "$ROOT_DIR"
+
+cat <<EOF
+
+Built:
+  $BASE_IMAGE
+  $APP_IMAGE
+
+To use this image with Overleaf Toolkit:
+  OVERLEAF_IMAGE_NAME=$OVERLEAF_IMAGE_NAME
+  config/version=$OVERLEAF_IMAGE_TAG
+
+You can configure Toolkit automatically with:
+  $ROOT_DIR/bin/setup-toolkit /path/to/overleaf-toolkit
+EOF

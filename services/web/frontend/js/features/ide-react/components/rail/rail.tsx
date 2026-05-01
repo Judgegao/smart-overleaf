@@ -9,6 +9,8 @@ import {
 import FileTreeOutlinePanel from '@/features/file-tree/components/file-tree-outline-panel'
 import ChatPane from '@/features/chat/components/chat-pane'
 import ChatIndicator from '@/features/chat/components/chat-indicator'
+import LLMAssistantPane from '@/features/llm-assistant/components/llm-assistant-pane'
+import LLMAssistantIcon from '@/features/llm-assistant/components/llm-assistant-icon'
 import getMeta from '@/utils/meta'
 import classNames from 'classnames'
 import IntegrationsPanel from '@/features/integrations-panel/integrations-panel'
@@ -131,6 +133,14 @@ export const RailLayout = () => {
         hide:
           !getMeta('ol-capabilities')?.includes('chat') ||
           isRestrictedTokenMember,
+      },
+      {
+        key: 'llm-assistant',
+        icon: LLMAssistantIcon,
+        component: <LLMAssistantPane />,
+        title: t('llm_assistant'),
+        hide: isRestrictedTokenMember,
+        disabled: view !== 'editor',
       },
       ...moduleRailEntries,
     ],

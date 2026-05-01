@@ -196,6 +196,13 @@ const settings = {
   // The name this is used to describe your Overleaf Community Edition Installation
   appName: process.env.OVERLEAF_APP_NAME || 'Overleaf Community Edition',
 
+  llmAssistant: {
+    enabled: process.env.LLM_ASSISTANT_ENABLED === 'true',
+    baseURL: process.env.LLM_ASSISTANT_BASE_URL,
+    apiKey: process.env.LLM_ASSISTANT_API_KEY,
+    model: process.env.LLM_ASSISTANT_MODEL || 'gpt-4o-mini',
+  },
+
   restrictInvitesToExistingAccounts:
     process.env.OVERLEAF_RESTRICT_INVITES_TO_EXISTING_ACCOUNTS === 'true',
 

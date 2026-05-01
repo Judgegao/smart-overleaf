@@ -35,6 +35,7 @@ import ExportsController from './Features/Exports/ExportsController.mjs'
 import PasswordResetRouter from './Features/PasswordReset/PasswordResetRouter.mjs'
 import StaticPagesRouter from './Features/StaticPages/StaticPagesRouter.mjs'
 import ChatController from './Features/Chat/ChatController.mjs'
+import LLMAssistantController from './Features/LLMAssistant/LLMAssistantController.mjs'
 import Modules from './infrastructure/Modules.mjs'
 import {
   RateLimiter,
@@ -183,6 +184,10 @@ const rateLimiters = {
   }),
   sendChatMessage: new RateLimiter('send-chat-message', {
     points: 100,
+    duration: 60,
+  }),
+  sendLLMAssistantMessage: new RateLimiter('send-llm-assistant-message', {
+    points: 30,
     duration: 60,
   }),
   statusCompiler: new RateLimiter('status-compiler', {
@@ -1048,6 +1053,25 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
       ChatController.editMessage
     )
   }
+
+  webRouter.post(
+    '/project/:project_id/llm-assistant/chat',
+    AuthorizationMiddleware.blockRestrictedUserFromProject,
+    AuthorizationMiddleware.ensureUserCanReadProject,
+    RateLimiterMiddleware.rateLimit(rateLimiters.sendLLMAssistantMessage),
+    LLMAssistantController.chat
+  )
+
+  webRouter.get(
+    '/llm-assistant/settings',
+    AuthenticationController.requireLogin(),
+    LLMAssistantController.getSettings
+  )
+  webRouter.post(
+    '/llm-assistant/settings',
+    AuthenticationController.requireLogin(),
+    LLMAssistantController.updateSettings
+  )
 
   webRouter.post(
     '/project/:Project_id/references/indexAll',

@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+TOOLKIT_DIR="${1:-$ROOT_DIR/../overleaf-toolkit}"
+TOOLKIT_REPO="${TOOLKIT_REPO:-https://github.com/overleaf/toolkit.git}"
+
+OVERLEAF_IMAGE_NAME="${OVERLEAF_IMAGE_NAME:-overleaf-llm}"
+OVERLEAF_IMAGE_TAG="${OVERLEAF_IMAGE_TAG:-6.1.2}"
+
+set_kv_file_value() {
+  local file="$1"
+  local key="$2"
+  local value="$3"
+
+  touch "$file"
+  if grep -Eq "^[#[:space:]]*$key=" "$file"; then
+    perl -0pi -e "s|^[#[:space:]]*\\Q$key\\E=.*\$|$key=$value|mg" "$file"
+  else
+    printf '\n%s=%s\n' "$key" "$value" >> "$file"
+  fi
+}
+
+ensure_kv_file_value() {
+  local file="$1"
+  local key="$2"
+  local value="$3"
+
+  touch "$file"
+  if ! grep -Eq "^[#[:space:]]*$key=" "$file"; then
+    printf '\n%s=%s\n' "$key" "$value" >> "$file"
+  fi
+}
+
+if [[ ! -d "$TOOLKIT_DIR" ]]; then
+  echo "Cloning Overleaf Toolkit into: $TOOLKIT_DIR"
+  git clone "$TOOLKIT_REPO" "$TOOLKIT_DIR"
+fi
+
+if [[ ! -x "$TOOLKIT_DIR/bin/init" ]]; then
+  echo "The target directory does not look like Overleaf Toolkit: $TOOLKIT_DIR" >&2
+  exit 1
+fi
+
+cd "$TOOLKIT_DIR"
+
+if [[ ! -f config/overleaf.rc || ! -f config/variables.env || ! -f config/version ]]; then
+  echo "Initializing Toolkit config"
+  bin/init
+fi
+
+if ! grep -q 'CODEX_MACOS_COMPAT_READ_CONFIGURATION' lib/shared-functions.sh; then
+  cat >> lib/shared-functions.sh <<'EOF'
+
+# CODEX_MACOS_COMPAT_READ_CONFIGURATION
+# Toolkit versions that use sed backreferences for optional quotes can fail on
+# macOS. These definitions are intentionally simple and override the earlier
+# ones after this file is sourced.
+function read_variable() {
+  local name=$1
+  grep -E "^$name=" "$TOOLKIT_ROOT/config/variables.env" \
+    | head -n 1 \
+    | cut -d= -f2-
+}
+
+function read_configuration() {
+  local name=$1
+  grep -E "^$name=" "$TOOLKIT_ROOT/config/overleaf.rc" \
+    | head -n 1 \
+    | cut -d= -f2-
+}
+EOF
+fi
+
+echo "Configuring Toolkit to use custom image: $OVERLEAF_IMAGE_NAME:$OVERLEAF_IMAGE_TAG"
+set_kv_file_value config/overleaf.rc SERVER_PRO false
+set_kv_file_value config/overleaf.rc OVERLEAF_IMAGE_NAME "$OVERLEAF_IMAGE_NAME"
+set_kv_file_value config/overleaf.rc SIBLING_CONTAINERS_ENABLED false
+printf '%s\n' "$OVERLEAF_IMAGE_TAG" > config/version
+
+ensure_kv_file_value config/variables.env ADMIN_PRIVILEGE_AVAILABLE true
+ensure_kv_file_value config/variables.env OVERLEAF_ADMIN_EMAIL admin@example.edu.cn
+ensure_kv_file_value config/variables.env OVERLEAF_SITE_URL http://localhost
+ensure_kv_file_value config/variables.env EMAIL_CONFIRMATION_DISABLED true
+ensure_kv_file_value config/variables.env LLM_ASSISTANT_ENABLED false
+
+if [[ -n "${LLM_ASSISTANT_BASE_URL:-}" ]]; then
+  ensure_kv_file_value config/variables.env LLM_ASSISTANT_BASE_URL "$LLM_ASSISTANT_BASE_URL"
+fi
+if [[ -n "${LLM_ASSISTANT_API_KEY:-}" ]]; then
+  ensure_kv_file_value config/variables.env LLM_ASSISTANT_API_KEY "$LLM_ASSISTANT_API_KEY"
+fi
+if [[ -n "${LLM_ASSISTANT_MODEL:-}" ]]; then
+  ensure_kv_file_value config/variables.env LLM_ASSISTANT_MODEL "$LLM_ASSISTANT_MODEL"
+fi
+
+cat <<EOF
+
+Toolkit is configured.
+
+Next commands:
+  cd "$TOOLKIT_DIR"
+  bin/up -d
+
+Current custom image:
+  $OVERLEAF_IMAGE_NAME:$OVERLEAF_IMAGE_TAG
+
+Edit these files before production use:
+  $TOOLKIT_DIR/config/overleaf.rc
+  $TOOLKIT_DIR/config/variables.env
+EOF

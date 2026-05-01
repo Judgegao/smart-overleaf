@@ -28,6 +28,43 @@ const intFromEnv = function (name, defaultValue) {
   return parseInt(process.env[name], 10) || defaultValue
 }
 
+const boolFromEnv = function (name, defaultValue) {
+  if (process.env[name] == null) {
+    return defaultValue
+  }
+  return process.env[name] === 'true'
+}
+
+const emailSettings = function () {
+  if (!process.env.SMTP_HOST) {
+    return undefined
+  }
+
+  const parameters = {
+    host: process.env.SMTP_HOST,
+    port: intFromEnv('SMTP_PORT', 587),
+    secure: boolFromEnv('SMTP_SECURE', false),
+  }
+
+  if (process.env.SMTP_IGNORE_TLS != null) {
+    parameters.ignoreTLS = boolFromEnv('SMTP_IGNORE_TLS', false)
+  }
+
+  if (process.env.SMTP_USER || process.env.SMTP_PASS) {
+    parameters.auth = {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    }
+  }
+
+  return {
+    fromAddress: process.env.EMAIL_FROM_ADDRESS || '',
+    replyToAddress: process.env.EMAIL_REPLY_TO_ADDRESS,
+    lifecycle: process.env.EMAIL_LIFECYCLE === 'true',
+    parameters,
+  }
+}
+
 const defaultTextExtensions = [
   'tex',
   'latex',
@@ -435,6 +472,13 @@ module.exports = {
     unlimitedQuota: 'unlimited',
   },
 
+  llmAssistant: {
+    enabled: process.env.LLM_ASSISTANT_ENABLED === 'true',
+    baseURL: process.env.LLM_ASSISTANT_BASE_URL,
+    apiKey: process.env.LLM_ASSISTANT_API_KEY,
+    model: process.env.LLM_ASSISTANT_MODEL || 'gpt-4o-mini',
+  },
+
   quotaGrants: {
     ai: {
       free: 0,
@@ -656,6 +700,7 @@ module.exports = {
   //	parameters:
   //		AWSAccessKeyID: ""
   //		AWSSecretKey: ""
+  email: emailSettings(),
 
   // For legacy reasons, we need to populate this object.
   sentry: {},

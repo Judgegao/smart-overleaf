@@ -1,0 +1,202 @@
+.llm-assistant-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--content-primary-themed);
+
+  .llm-assistant-wrapper {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    background-color: var(--bg-primary-themed);
+  }
+
+  .llm-assistant-messages {
+    position: absolute;
+    inset: 0;
+    bottom: 112px;
+    overflow: auto;
+    padding: var(--spacing-04);
+  }
+
+  .llm-assistant-empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    gap: var(--spacing-04);
+    text-align: center;
+    color: var(--content-secondary-themed);
+  }
+
+  .llm-assistant-empty-state-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--bg-secondary-themed);
+    color: var(--content-primary-themed);
+
+    .material-symbols {
+      font-size: 32px;
+    }
+  }
+
+  .llm-assistant-empty-state-title {
+    color: var(--content-primary-themed);
+    font-size: var(--font-size-02);
+    line-height: var(--line-height-02);
+    font-weight: bold;
+  }
+
+  .llm-assistant-empty-state-body {
+    font-size: var(--font-size-02);
+    line-height: var(--line-height-02);
+  }
+
+  .llm-assistant-message-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .llm-assistant-message {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-01);
+  }
+
+  .llm-assistant-message-user {
+    align-items: flex-end;
+  }
+
+  .llm-assistant-message-label {
+    color: var(--content-secondary-themed);
+    font-size: var(--font-size-01);
+    line-height: var(--line-height-01);
+  }
+
+  .llm-assistant-message-content {
+    max-width: 100%;
+    width: fit-content;
+    overflow-x: auto;
+    padding: var(--spacing-03) var(--spacing-04);
+    border-radius: var(--border-radius-large);
+    background-color: var(--bg-light-secondary);
+    white-space: pre-wrap;
+  }
+
+  .llm-assistant-message-assistant .llm-assistant-message-content {
+    white-space: normal;
+
+    p,
+    ul,
+    ol,
+    blockquote,
+    pre {
+      margin: 0 0 var(--spacing-03);
+    }
+
+    p:last-child,
+    ul:last-child,
+    ol:last-child,
+    blockquote:last-child,
+    pre:last-child {
+      margin-bottom: 0;
+    }
+
+    ul,
+    ol {
+      padding-left: var(--spacing-06);
+    }
+
+    blockquote {
+      padding-left: var(--spacing-03);
+      border-left: 3px solid var(--border-divider-themed);
+      color: var(--content-secondary-themed);
+    }
+
+    code {
+      font-family: $font-family-monospace;
+      font-size: 0.95em;
+      padding: 0 var(--spacing-01);
+      border-radius: var(--border-radius-base);
+      background-color: var(--bg-primary-themed);
+    }
+
+    pre {
+      max-width: 100%;
+      overflow-x: auto;
+      padding: var(--spacing-03);
+      border-radius: var(--border-radius-base);
+      background-color: var(--bg-primary-themed);
+      white-space: pre;
+
+      code {
+        display: block;
+        padding: 0;
+        background-color: transparent;
+      }
+    }
+  }
+
+  .llm-assistant-message-user .llm-assistant-message-content {
+    background-color: var(--bg-accent-03);
+  }
+
+  .llm-assistant-pending,
+  .llm-assistant-error {
+    margin-top: var(--spacing-04);
+    font-size: var(--font-size-02);
+    line-height: var(--line-height-02);
+  }
+
+  .llm-assistant-error {
+    color: var(--content-danger-themed);
+  }
+
+  .llm-assistant-input {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-02);
+    height: 112px;
+    padding: var(--spacing-03);
+    border-top: 1px solid var(--border-divider-themed);
+    background-color: var(--bg-primary-themed);
+  }
+
+  .llm-assistant-input textarea {
+    flex: 1 1 auto;
+    min-height: 0;
+    resize: none;
+    color: var(--content-primary-themed);
+    border: 1px solid var(--border-divider-themed);
+    border-radius: var(--border-radius-base);
+    background-color: var(--bg-primary-themed);
+    font-size: var(--font-size-02);
+    line-height: var(--line-height-02);
+    padding: var(--spacing-02);
+  }
+
+  .llm-assistant-input button {
+    align-self: flex-end;
+  }
+}
+
+.llm-assistant-settings {
+  .llm-assistant-settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-04);
+  }
+}

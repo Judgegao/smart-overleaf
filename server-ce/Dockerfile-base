@@ -75,8 +75,10 @@ RUN mkdir /install-tl-unx \
       latexmk \
       texcount \
       synctex \
+      ctex \
       etoolbox \
       xetex \
+      collection-langchinese \
 &&  tlmgr path add \
 &&  rm -rf /install-tl-unx
 

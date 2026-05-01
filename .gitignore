@@ -3,4 +3,20 @@
 
 # user defined files
 .env
+.env.*
 docker-compose.override.yml
+
+.DS_Store
+
+# local build/runtime output
+/develop/compiles/
+/develop/output/
+/data/
+/backups/
+
+# local Overleaf Toolkit checkout/config, if created inside this repository
+/overleaf-toolkit/
+/toolkit/
+/config/overleaf.rc
+/config/variables.env
+/config/version

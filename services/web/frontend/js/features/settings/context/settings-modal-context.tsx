@@ -32,6 +32,7 @@ import { useProjectSettingsContext } from '@/features/editor-left-menu/context/p
 import { useFeatureFlag } from '@/shared/context/split-test-context'
 import ProjectNotificationsSetting from '@/features/settings/components/editor-settings/project-notifications-setting'
 import getMeta from '@/utils/meta'
+import LLMAssistantSettings from '@/features/settings/components/llm-assistant-settings'
 
 const [referenceSearchSettingModule] = importOverleafModules(
   'referenceSearchSetting'
@@ -238,6 +239,22 @@ export const SettingsModalProvider: FC<React.PropsWithChildren> = ({
               {
                 key: 'lineHeight',
                 component: <LineHeightSetting />,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'llm_assistant',
+        title: t('llm_assistant'),
+        icon: 'smart_toy',
+        sections: [
+          {
+            key: 'general',
+            settings: [
+              {
+                key: 'llmAssistantSettings',
+                component: <LLMAssistantSettings />,
               },
             ],
           },

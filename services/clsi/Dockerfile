@@ -45,7 +45,7 @@ FROM app AS with-texlive
 
 RUN apt-get update \
     && apt-cache depends texlive-full | grep "Depends: " | grep -v -- "-doc" | grep -v -- "-lang-" | sed 's/Depends: //' | xargs apt-get install -y --no-install-recommends \
-    && apt-get install -y --no-install-recommends fontconfig inkscape python3-pygments qpdf \
+    && apt-get install -y --no-install-recommends fontconfig inkscape python3-pygments qpdf texlive-lang-chinese \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p cache compiles output \

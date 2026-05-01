@@ -1,37 +1,4 @@
-# Smart Overleaf
-
-Smart Overleaf is a customized Overleaf Community Edition build with native LLM Assistant support. It is intended for labs, research groups, and internal university deployments that want collaborative LaTeX editing, local data control, and flexible AI assistance without paying for hosted Overleaf add-ons.
-
-The original Overleaf README is preserved in [overleaf_README.md](overleaf_README.md).
-
-## Why This Project
-
-Hosted Overleaf has several limitations for budget-sensitive users:
-
-1. The free version can only share with up to 2 collaborators. More collaborators require a paid plan, starting around USD 28 per month.
-2. AI features such as polishing, translation, and grammar correction require a paid AI Assist plan, starting around USD 16 per month, and the model cannot be freely selected.
-3. Compilation can be slow unless you pay for better performance.
-4. Privacy is limited because all project data is stored in Overleaf's hosted database.
-
-Local LaTeX workflows such as VS Code + LaTeX + LLM plugins also have practical limitations:
-
-1. Finished papers cannot be shared and edited online in real time. Exported PDFs are not suitable for collaborative editing.
-2. Local LaTeX setup is tedious.
-3. The UI is less friendly for users who are already familiar with Overleaf.
-
-This project is based on the official open-source Overleaf Community Edition and adds native LLM support. It is a lightweight, self-hosted alternative for users who want an affordable Overleaf-like workflow.
-
-Advantages:
-
-1. Fully open source and free to use.
-2. Supports LLM-based polishing, translation, grammar correction, and writing suggestions.
-3. Supports switching between OpenAI-compatible LLM APIs and models.
-4. Supports campus intranet deployment and multi-user collaboration inside a trusted network.
-5. Makes better use of idle lab or department servers.
-6. Provides a familiar Overleaf-style UI and avoids complex local LaTeX setup.
-7. Runs with Docker, making server deployment simple.
-
-## Deployment Guide
+# Overleaf CE Deployment Guide
 
 This document explains how to run this customized Overleaf CE build outside the development environment. Do not use `develop/bin/up` or `develop/bin/dev` for a real deployment.
 
