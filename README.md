@@ -4,6 +4,12 @@ Smart Overleaf is a customized Overleaf Community Edition build with native LLM 
 
 The original Overleaf README is preserved in [overleaf_README.md](overleaf_README.md).
 
+## Demo
+
+[Watch the demo video](doc/demo.mp4).
+
+<video src="doc/demo.mp4" controls width="100%"></video>
+
 ## Why This Project
 
 Hosted Overleaf has several limitations for budget-sensitive users:
